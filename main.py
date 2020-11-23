@@ -23,6 +23,12 @@ class CoffeeWidget(QMainWindow):
             for i, row in enumerate(res):
                 self.tableWidget.setRowCount(self.tableWidget.rowCount() + 1)
                 for j, elem in enumerate(row):
+                    if j == 2:
+                        elem = self.connection.cursor().execute("SELECT f.name FROM roasting as f where f.id = ? ",
+                                                                (elem,)).fetchone()[0]
+                    if j == 3:
+                        elem = self.connection.cursor().execute("SELECT f.name FROM kind as f where f.id = ? ",
+                                                                (elem,)).fetchone()[0]
                     self.tableWidget.setItem(i, j, QTableWidgetItem(str(elem)))
         except Exception:
             self.error_label.setText("Извините, но ваш запрос неверный")
