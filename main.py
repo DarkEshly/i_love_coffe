@@ -1,19 +1,25 @@
 import sqlite3
-import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+import os
+import sys
+
+default_way = '\\'.join(str(os.path.abspath(__file__)).split('\\')[:-1]) + '\\'
+sys.path.append(default_way + 'UI')
+from addEditCoffeeForm import CoffeeMakeWindow
+from main2 import Ui_MainWindow
 
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
 
 
-class MakeCoffeeWidget(QMainWindow):
+class MakeCoffeeWidget(QMainWindow, CoffeeMakeWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi("addEditCoffeeForm.ui", self)
-        self.con = sqlite3.connect("coffee.db")
+        self.setupUi(self)
+        self.con = sqlite3.connect("data/coffee.db")
         self.setVisible(False)
         self.finish_button.clicked.connect(self.apply_result)
 
@@ -83,11 +89,11 @@ class MakeCoffeeWidget(QMainWindow):
             self.kind_field.setCurrentText(kind)
 
 
-class CoffeeWidget(QMainWindow):
+class CoffeeWidget(QMainWindow, Ui_MainWindow):
     def __init__(self, help_widget):
         super().__init__()
-        uic.loadUi('main.ui', self)
-        self.connection = sqlite3.connect("coffee.db")
+        self.setupUi(self)
+        self.connection = sqlite3.connect("data/coffee.db")
         self.button.clicked.connect(self.load_table)
         self.add_button.clicked.connect(self.add_coffee)
         self.change_button.clicked.connect(self.change_coffee)
